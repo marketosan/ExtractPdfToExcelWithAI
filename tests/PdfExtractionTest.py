@@ -3,9 +3,9 @@ import unittest
 import pandas as pd
 import os
 
-from main.excel_printer import ExcelPrinter
-from main.main import MyPdfToExcelExtractor
-from main.product import Product
+from excel_printer import ExcelPrinter
+from main import MyPdfToExcelExtractor
+from product import Product
 
 
 class pdfExtractionTest(unittest.TestCase):
