@@ -57,7 +57,7 @@ class pdfExtractionTest(unittest.TestCase):
         pdf_files = list()
         pdf_files.append("./samples/PDF_files/mypdf7.PDF")
         pdf_files.append("./samples/PDF_files/mypdf_mixed_part_numbers.PDF")
-        pdf_files.append("./samples/PDF_files/mypdf_numeric_part_numbers.pdf")
+        pdf_files.append("./samples/PDF_files/mypdf_numeric_part_numbers.PDF")
 
         pdf_to_excel_extractor = MyPdfToExcelExtractor(pdf_files)
         pdf_to_excel_extractor.extract_files()
