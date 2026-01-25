@@ -6,8 +6,8 @@ from tkinter import filedialog
 class FileSelectGUI:
     FRAME_WIDTH = 450
     FRAME_HEIGHT = 400
-    DISTANCE_FROM_TOP = 100
-    DISTANCE_FROM_LEFT = 400
+    DISTANCE_FROM_TOP = 700
+    DISTANCE_FROM_LEFT = 1200
     RESIZABLE_X = False
     RESIZABLE_Y = False
 
@@ -27,7 +27,7 @@ class FileSelectGUI:
         self.root_frame.resizable(self.RESIZABLE_X, self.RESIZABLE_Y)
 
         # Create listbox to display file paths
-        self.listbox = tk.Listbox(self.root_frame, width=70, height=14, font=8, xscrollcommand=True, yscrollcommand=True)
+        self.listbox = tk.Listbox(self.root_frame, width=70, height=14)
         self.listbox.pack(pady=10)
 
         # Create frame for buttons
@@ -50,7 +50,7 @@ class FileSelectGUI:
 
     def browse_files(self):
         # open dialog to select files that allows to select only pdf files
-        selected_files = set(filedialog.askopenfilenames(filetypes=[("PDF files", "*.pdf")]))
+        selected_files = set(filedialog.askopenfilenames(filetypes=[("PDF files", "*.pdf *.PDF")]))
         for file_path in selected_files:
             file_name = file_path.strip().split('/')[-1]
             self.listbox.insert(tk.END, file_name)
@@ -78,13 +78,13 @@ class FileSelectGUI:
         return self.RESULT_FILE_PREFIX + formatted_date_time + ".xlsx"
 
 
-
 # if __name__ == "__main__":
 #     app = FileSelectGUI()
 #
 #     # After the GUI is closed, you can access the selected file paths
 #     selected_paths = app.file_paths_to_extract
-#     print(" File save to: " + app.file_with_path)
+#     if app.extracted_file_name_with_path:
+#         print(" File save to: " + app.extracted_file_name_with_path)
 #     print("Selected paths:")
 #     for path in selected_paths:
 #         print(path)

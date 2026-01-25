@@ -11,7 +11,7 @@ from product import Product
 class pdfExtractionTest(unittest.TestCase):
 
     def test_extract_one_pdf_full_data(self):
-        pdf_to_excel_extractor = MyPdfToExcelExtractor({f"./samples/PDF_files/mypdf1.PDF"})
+        pdf_to_excel_extractor = MyPdfToExcelExtractor({f"samples/PDF_files/mypdf1.PDF"})
         pdf_to_excel_extractor.extract_files()
         # pdf_to_excel_extractor.print_extracted_data()
         self.assert_products_equal(pdf_to_excel_extractor.extracted_products[0], Product('400-0530', 'Cover, Plastic, MSFD Alarm PCB', '3', '01.06.2023', '4900046964'))
@@ -31,7 +31,7 @@ class pdfExtractionTest(unittest.TestCase):
     def test_extract_multiple_pdfs(self):
         pdf_files = list()
         for i in range(1,7):
-            pdf_files.append(f"./samples/PDF_files/mypdf{i}.PDF")
+            pdf_files.append(f"samples/PDF_files/mypdf{i}.PDF")
         pdf_to_excel_extractor = MyPdfToExcelExtractor(pdf_files)
         pdf_to_excel_extractor.extract_files()
         self.assertEqual(len(pdf_to_excel_extractor.extracted_products), 39)
@@ -39,14 +39,14 @@ class pdfExtractionTest(unittest.TestCase):
     def test_extract_multiple_pdfs_to_excel(self):
         pdf_files = list()
         for i in range(1, 7):
-            pdf_files.append(f"./samples/PDF_files/mypdf{i}.PDF")
+            pdf_files.append(f"samples/PDF_files/mypdf{i}.PDF")
         pdf_to_excel_extractor = MyPdfToExcelExtractor(pdf_files)
         pdf_to_excel_extractor.extract_files()
 
         excel_printer = ExcelPrinter()
         result_file_name = "some_filename.xlsx"
         excel_printer.print_to_pdf(pdf_to_excel_extractor.extracted_products, result_file_name)
-        expected_result = pd.read_excel("./samples/XLSX_files/extracted_pdf-expected1.xlsx")
+        expected_result = pd.read_excel("samples/XLSX_files/extracted_pdf-expected1.xlsx")
         actual_result = pd.read_excel(result_file_name)
         self.assertEqual(len(pdf_to_excel_extractor.extracted_products), 39)
         self.assertTrue(expected_result.equals(actual_result))
@@ -55,9 +55,9 @@ class pdfExtractionTest(unittest.TestCase):
 
     def test_extract_with_numeric_part_numbers(self):
         pdf_files = list()
-        pdf_files.append("./samples/PDF_files/mypdf7.PDF")
-        pdf_files.append("./samples/PDF_files/mypdf_mixed_part_numbers.PDF")
-        pdf_files.append("./samples/PDF_files/mypdf_numeric_part_numbers.PDF")
+        pdf_files.append("samples/PDF_files/mypdf7.PDF")
+        pdf_files.append("samples/PDF_files/mypdf_mixed_part_numbers.PDF")
+        pdf_files.append("samples/PDF_files/mypdf_numeric_part_numbers.PDF")
 
         pdf_to_excel_extractor = MyPdfToExcelExtractor(pdf_files)
         pdf_to_excel_extractor.extract_files()
@@ -66,7 +66,7 @@ class pdfExtractionTest(unittest.TestCase):
         result_file_name = "some_filename2.xlsx"
         excel_printer.print_to_pdf(pdf_to_excel_extractor.extracted_products, result_file_name)
 
-        expected_result = pd.read_excel("./samples/XLSX_files/extracted_pdf-expected_when_having_also_numeric_part_numbers.xlsx")
+        expected_result = pd.read_excel("samples/XLSX_files/extracted_pdf-expected_when_having_also_numeric_part_numbers.xlsx")
         actual_result = pd.read_excel(result_file_name)
 
         self.assertEqual(len(pdf_to_excel_extractor.extracted_products), 29)
@@ -74,14 +74,14 @@ class pdfExtractionTest(unittest.TestCase):
         os.remove(result_file_name)
 
     def test_when_description_in_box(self):
-        pdf_to_excel_extractor = MyPdfToExcelExtractor("./samples/PDF_files/mypdf_description_in_box.PDF")
+        pdf_to_excel_extractor = MyPdfToExcelExtractor("samples/PDF_files/mypdf_description_in_box.PDF")
         pdf_to_excel_extractor.extract_files()
 
         excel_printer = ExcelPrinter()
         result_file_name = "samples/XLSX_files/some_filename3.xlsx"
         excel_printer.print_to_pdf(pdf_to_excel_extractor.extracted_products, result_file_name)
 
-        expected_result = pd.read_excel("./samples/XLSX_files/extracted_pdf-expected_when_description_in_box.xlsx")
+        expected_result = pd.read_excel("samples/XLSX_files/extracted_pdf-expected_when_description_in_box.xlsx")
         actual_result = pd.read_excel(result_file_name)
 
         self.assertEqual(len(pdf_to_excel_extractor.extracted_products), 23)
