@@ -45,7 +45,7 @@ class MyPdfToExcelExtractor:
     def extract_and_save_all_fields(self, pdf):
         purchase_order_value = self.get_purchase_order(pdf)
 
-        # find where the column titles are to help find parent table with info (might have more depending one pages)
+        # find where the column titles are to help find parent table with info (might have more depending on one pages)
         text_lines_horizontal_matched = pdf.pq('LTTextLineHorizontal:contains("UN.PRICE(USD)")')
 
         for matched_table in text_lines_horizontal_matched:
@@ -62,8 +62,9 @@ class MyPdfToExcelExtractor:
                     if self.ITEMS_LINE_SEPARATOR in line_text_value:
                         next_value = self.validation_helper.get_value(
                             parent_rect_with_info.getchildren()[idx + 1].getchildren()[0])
+                        #when we have reached total amoun, then  this is the end of the order and there are no more items
                         if "TOTAL AMOUNT FOR ORDER" in next_value or self.ITEMS_LINE_SEPARATOR in next_value:
-                            continue
+                            return
                         else:
                             # using the index of the line separators we can find all items after it
                             self.extracted_products.append(
@@ -132,8 +133,14 @@ class MyPdfToExcelExtractor:
             print('-----------------')
 
     # only to create xml representation of pdf
-    # def extract_pdf_to_xml_file(self):
-    #     self.pdf.tree.write(f'generated_xmls/my_pdf_as_xml.xml', pretty_print=True)
+    # def extract_pdf_to_xml_file(self, pdf):
+    #
+    #     output_path = '../tests/generated_xmls/my_pdf_as_xml.xml'
+    #     os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    #     pdf.tree.write(output_path, pretty_print=True)
+    #
+    #     pdf.tree.write(f'../tests/generated_xmls/my_pdf_as_xml.xml', pretty_print=True)
+    #     exit()
 
     @staticmethod
     def show_error_popup(exception, file):
