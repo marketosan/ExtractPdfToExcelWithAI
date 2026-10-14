@@ -62,7 +62,7 @@ class MyPdfToExcelExtractor:
                     if self.ITEMS_LINE_SEPARATOR in line_text_value:
                         next_value = self.validation_helper.get_value(
                             parent_rect_with_info.getchildren()[idx + 1].getchildren()[0])
-                        #when we have reached total amoun, then  this is the end of the order and there are no more items
+                        #when we have reached total amount, then this is the end of the order and there are no more items
                         if "TOTAL AMOUNT FOR ORDER" in next_value or self.ITEMS_LINE_SEPARATOR in next_value:
                             return
                         else:
