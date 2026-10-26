@@ -1,18 +1,16 @@
-import traceback
-
-import tkinter as tk
-
 from pdfminer.layout import LTTextLineHorizontal, LTTextBoxHorizontal
 
+from ai_pdf_extractor import AiPdfExtractor
 from excel_printer import ExcelPrinter
 from file_select_gui import FileSelectGUI
+from extraction_approach import ExtractionApproach
+from pdf_extractor import PdfExtractor
 from product import Product
 from validation_helper import ValidationHelper
 from pdfquery import PDFQuery
-from tkinter import messagebox
 
 
-class MyPdfToExcelExtractor:
+class MyPdfToExcelExtractor(PdfExtractor):
     ITEMS_LINE_SEPARATOR = '---------------'
     PART_NO_X_RANGE = (45, 46)
     PART_NO_WITH_AA_X_RANGE = (8, 9)
@@ -20,27 +18,14 @@ class MyPdfToExcelExtractor:
     DATE_X_RANGE = (750, 752)
 
     def __init__(self, file_paths_set):
+        super().__init__(file_paths_set)
         self.validation_helper = ValidationHelper()
 
-        if isinstance(file_paths_set, set) or isinstance(file_paths_set, list):
-            self.file_paths_set = file_paths_set
-        else:
-            self.file_paths_set = {file_paths_set}
-
-        self.extracted_products = list()
-
-    def extract_files(self):
-        for file_path in self.file_paths_set:
-            try:
-                pdf = PDFQuery(file_path)
-                pdf.load()
-                self.extract_and_save_all_fields(pdf)
-                pdf.file.close()
-            except Exception as e:
-                self.show_error_popup(e, file_path)
-                print(e)
-                exit()
-        print("Received data successfully")
+    def extract_file(self, file_path):
+        pdf = PDFQuery(file_path)
+        pdf.load()
+        self.extract_and_save_all_fields(pdf)
+        pdf.file.close()
 
     def extract_and_save_all_fields(self, pdf):
         purchase_order_value = self.get_purchase_order(pdf)
@@ -127,11 +112,6 @@ class MyPdfToExcelExtractor:
         quantity = self.validation_helper.validate_and_get_quantity(rect_children[idx - 4])
         return Product(found_values[0], found_values[1], quantity, found_values[2], purchase_order_value)
 
-    def print_extracted_data(self):
-        for item in self.extracted_products:
-            print(item)
-            print('-----------------')
-
     # only to create xml representation of pdf
     # def extract_pdf_to_xml_file(self, pdf):
     #
@@ -142,21 +122,19 @@ class MyPdfToExcelExtractor:
     #     pdf.tree.write(f'../tests/generated_xmls/my_pdf_as_xml.xml', pretty_print=True)
     #     exit()
 
-    @staticmethod
-    def show_error_popup(exception, file):
-        file = file.strip().split('/')[-1]
-        root = tk.Tk()
-        root.withdraw()  # Hide the main window
-        error_message = f"{type(exception).__name__}: {str(exception)}\n Please contact admin to resolve issue.\n\nTraceback:\n{traceback.format_exc()}"
-        messagebox.showerror("Error on file: " + file, error_message)
-
 
 # ==============================================================================
 # MAIN
 if __name__ == '__main__':
     ui_interface = FileSelectGUI()
 
-    pdf_to_excel_extractor = MyPdfToExcelExtractor(ui_interface.file_paths_to_extract)
+    if ui_interface.extraction_approach == ExtractionApproach.RULE_BASED:
+        pdf_to_excel_extractor = MyPdfToExcelExtractor(ui_interface.file_paths_to_extract)
+        print('Using rule based approach')
+    else:
+        pdf_to_excel_extractor = AiPdfExtractor(ui_interface.file_paths_to_extract, ui_interface.extraction_approach)
+        print(f"Using AI model: {ui_interface.extraction_approach.value}")
+
     pdf_to_excel_extractor.extract_files()
 
     if ui_interface.extracted_file_name_with_path is not None:

@@ -70,8 +70,10 @@ class ValidationHelper:
     def validate_and_get_quantity(self, text_line_horizontal):
         quantity = self.get_value(text_line_horizontal)
         if quantity.replace('.', '').isnumeric():
+            # '.' is the thousands separator, e.g. 1.500 -> 1500
+            quantity = int(quantity.replace('.', ''))
             if not self.valid_x_location(text_line_horizontal, 508, 545):
-                quantity = self.append_confirm(quantity)
+                quantity = self.append_confirm(str(quantity))
             return quantity
         raise ValueError("Unable to find valid quantity")
 
